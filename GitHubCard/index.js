@@ -1,8 +1,21 @@
+import axios from 'axios';
+
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+
+// Fetches data from endpoint and uses dot notation to insert res.data into the component
+axios.get("https://api.github.com/users/AnhtuanTran-11")
+.then(res => {
+  cardMaker(res.data);
+  console.log('This is the response', res);
+})
+.catch(err => {
+  debugger;
+  console.log('This is if there was an error', err);
+});
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -28,7 +41,22 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+// Fetches data from endpoint using a for loop to loop through the followersArray;
+const followersArray = ["tetondan","dustinmyers","justsml","luishrd","bigknell"];
+for (let i = 0; i < followersArray.length; i++) {
+  let userName = followersArray[i];
+  axios.get(`https://api.github.com/users/${userName}`)
+.then(res => {
+  cardMaker(res.data);
+  console.log('This is the response', res);
+})
+.catch(err => {
+  debugger;
+  console.log('This is if there was an error', err);
+});
+
+
+}
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -50,6 +78,55 @@ const followersArray = [];
     </div>
 */
 
+function cardMaker(data) {
+  // Creates elements
+  const cardDiv = document.createElement("div");
+  const imgSrc = document.createElement("img");
+  const cardInfoDiv = document.createElement("div");
+  const h3Name = document.createElement("h3");
+  const pUserName = document.createElement("p");
+  const pLocation = document.createElement("p");
+  const pProfile = document.createElement("p");
+  const aHref = document.createElement("a");
+  const pFollowers = document.createElement("p");
+  const pFollowing = document.createElement("p");
+  const pBio = document.createElement("p");
+
+  // Attaches text to the elements
+  h3Name.textContent = data.name;
+  pUserName.textContent = data.login;
+  pLocation.textContent = `Location: ${data.location}`;
+  aHref.textContent = data.url;
+  pProfile.textContent = 'Profile:';
+  pFollowers.textContent = `Followers: ${data.followers}`;
+  pFollowing.textContent = `Following: ${data.following}`;
+  pBio.textContent = `Bio: ${data.bio}`;
+
+  // Adds classes and attributes to elements
+  cardDiv.classList.add("card");
+  cardInfoDiv.classList.add("card-info");
+  imgSrc.setAttribute('src', data.avatar_url);
+  aHref.setAttribute('href', data.html_url);
+  h3Name.classList.add("name");
+  pUserName.classList.add("username");
+  
+  // Appends the elements to the div
+  cardDiv.appendChild(imgSrc);
+  cardDiv.appendChild(cardInfoDiv);
+  cardInfoDiv.appendChild(h3Name);
+  cardInfoDiv.appendChild(pUserName);
+  cardInfoDiv.appendChild(pLocation);
+  cardInfoDiv.appendChild(pProfile);
+  pProfile.appendChild(aHref);
+  cardInfoDiv.appendChild(pFollowers);
+  cardInfoDiv.appendChild(pFollowing);
+  cardInfoDiv.appendChild(pBio);
+
+  // Selects an entry point for the content
+  document.querySelector(".cards").append(cardDiv);
+
+  return cardDiv;
+}
 /*
   List of LS Instructors Github username's:
     tetondan
